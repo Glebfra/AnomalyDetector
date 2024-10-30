@@ -1,17 +1,21 @@
+import random
+from time import sleep
+from typing import Generator
+
 import numpy as np
 
 
 class DataGenerator:
+    time: int = 0
+
     def __init__(
             self,
-            points_number: int = 1000,
             trend_slope: float = 0.01,
             season_amplitude: float = 10,
             season_period: float = 60,
             random_noise_level: float = 1,
-            random_seed: float = None
+            random_seed: float = None,
     ) -> None:
-        self.points_number = points_number
         self.trend_slope = trend_slope
 
         self.season_amplitude = season_amplitude
@@ -19,24 +23,22 @@ class DataGenerator:
 
         self.random_noise_level = random_noise_level
         if random_seed is not None:
-            np.random.seed(random_seed)
+            random.seed(random_seed)
+
+    def generate_data(self) -> Generator:
+        while True:
+            yield self.trend + self.seasonality + self.random_noise_point
+            self.time += 1
 
     @property
-    def time(self) -> np.ndarray:
-        return np.arange(self.points_number)
-
-    @property
-    def trend(self) -> np.ndarray:
+    def trend(self) -> float:
         return self.trend_slope * self.time
 
     @property
-    def seasonality(self) -> np.ndarray:
+    def seasonality(self) -> float:
         return self.season_amplitude * np.sin(2 * np.pi * self.time / self.season_period)
 
     @property
-    def random_noise(self) -> np.ndarray:
-        return np.random.normal(0, self.random_noise_level, self.points_number)
-
-    @property
-    def data(self) -> np.ndarray:
-        return self.trend + self.seasonality + self.random_noise
+    def random_noise_point(self) -> float:
+        """Creates the random noise point between -noise_level and noise_level"""
+        return ((2 * random.random()) - 1) * self.random_noise_level
