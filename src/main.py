@@ -5,14 +5,17 @@ from AnomalyDetector import AnomalyDetector
 from DataGenerator import DataGenerator
 
 generator = DataGenerator(
-    trend_slope=0.01, random_seed=None, season_amplitude=5, season_period=60
+    trend_slope=0.01, season_amplitude=5, season_period=60
 )
-detector = AnomalyDetector(window_size=150, seasonal_period=None, alpha=0.01)
 
-plt.ion()  # Turn on Interactive mode
+detector = AnomalyDetector(
+    window_size=150, seasonal_period=None, alpha=0.01
+)
+
+plt.ion()
 fig, ax = plt.subplots()
-line, = ax.plot([], [], 'b-', label="Data")  # Data line
-anomaly_line, = ax.plot([], [], 'ro', label="Anomaly")  # Anomaly line
+line, = ax.plot([], [], 'b-', label="Data")
+anomaly_line, = ax.plot([], [], 'ro', label="Anomaly")
 
 ax.set_xlabel('Time')
 ax.set_ylabel('Value')
